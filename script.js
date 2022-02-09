@@ -49,6 +49,8 @@ let questions = [
     }
 ];
 
+let colorClasses = ["bg-success", "bg-danger"];
+
 let rightQuestions = 0;
 let currentQuestion = 0;
 let AUDIO_SUCCESS = new Audio('audio/right.mp3');
@@ -105,16 +107,24 @@ function answer(selection) {
     let idOfRightAnswer = `answer_${question['right_answer']}`;
 
     if (rightAnswerSelected(selectedQuestionNumber, question)) {
-        $(selection).parentNode.classList.add('bg-success');
-        AUDIO_SUCCESS.play();
-        rightQuestions++;
+        answerSuccess(selection);
     } else {
-        $(selection).parentNode.classList.add('bg-danger');
-        $(idOfRightAnswer).parentNode.classList.add('bg-success');
-        AUDIO_FAIL.play();
+        answerFailure(selection, idOfRightAnswer);
     }
 
     $("next-button").disabled = false;
+}
+
+function answerSuccess(selection) {
+    $(selection).parentNode.classList.add('bg-success');
+    AUDIO_SUCCESS.play();
+    rightQuestions++;
+}
+
+function answerFailure(selection, idOfRightAnswer) {
+    $(selection).parentNode.classList.add('bg-danger');
+    $(idOfRightAnswer).parentNode.classList.add('bg-success');
+    AUDIO_FAIL.play();
 }
 
 function rightAnswerSelected(selectedQuestionNumber, question) {
@@ -129,14 +139,11 @@ function nextQuestion() {
 }
 
 function resetAnswerButtons() {
-    $('answer_1').parentNode.classList.remove('bg-danger');
-    $('answer_1').parentNode.classList.remove('bg-success');
-    $('answer_2').parentNode.classList.remove('bg-danger');
-    $('answer_2').parentNode.classList.remove('bg-success');
-    $('answer_3').parentNode.classList.remove('bg-danger');
-    $('answer_3').parentNode.classList.remove('bg-success');
-    $('answer_4').parentNode.classList.remove('bg-danger');
-    $('answer_4').parentNode.classList.remove('bg-success');
+    for (let index = 1; index < questions.length - 1; index++) {
+        const element = $(`answer_${index}`);
+        element.parentNode.classList.remove(colorClasses[0]);
+        element.parentNode.classList.remove(colorClasses[1]);
+    }
 }
 
 function restartGame() {
